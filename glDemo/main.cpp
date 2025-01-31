@@ -5,14 +5,17 @@
 // global variables
 
 // Window size
-const unsigned int initWidth = 512;
+const unsigned int initWidth = 1024;
 const unsigned int initHeight = 512;
-double red = 1;
-double green = 1;
-double blue = 1;
+float red = 1;
+float green = 1;
+float blue = 1;
 
 float vertical = 0;
 float horizontal = 0;
+bool horz = false; 
+bool vert = false;
+float vertices[4][2] = { {1.0f, 0.0f},{1.5f,0.0f},{1.5f, -0.5f},{1.0f,-0.5f} };
 
 
 // Function prototypes
@@ -65,7 +68,7 @@ int main() {
 	// Initialise scene - geometry and shaders etc
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 
-	gluOrtho2D(-2.0, 2.0, -2.0, 2.0);
+	gluOrtho2D(-4.0, 4.0, -2.0, 2.0);
 
 	//
 	// 2. Main loop
@@ -125,7 +128,7 @@ void renderScene()
 {
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3d(1, 1, 0);
+	glColor3f(1, 1, 0);
 	// Render objects here...
 	glBegin(GL_TRIANGLES);
 	glVertex2f(-0.5f, -0.5f);
@@ -139,22 +142,24 @@ void renderScene()
 	glVertex2f(0.5f, 0.2f);
 	glEnd(); 
 
-	glColor3d(red, green, blue);        
+	glColor3f(red, green, blue);        
 	glBegin(GL_TRIANGLES);
 	glVertex2f(-0.9f, -0.1f);
 	glVertex2f(-0.8f, 0.1f);
 	glVertex2f(-0.7f, -0.1f);
 	glEnd();
 
-	
-	glColor3d(1, 0, 0);
+	glPushMatrix();
+	glTranslatef(horizontal, vertical, 0);
+	glColor3f(1, 0, 0);
 	glBegin(GL_POLYGON); 
-	glVertex2f(1.0f +horizontal, 0.0f +vertical);
-	glVertex2f(1.5f + horizontal, 0.0f + vertical);
-	glVertex2f(1.5f + horizontal, -0.5f + vertical);
-	glVertex2f(1.0f + horizontal, -0.5f + vertical);
+	for (int i = 0; i < 4; i++)
+	{
+		
+		glVertex2f(vertices[i][0], vertices[i][1]);
+	}
 	glEnd();
-
+	glPopMatrix();
 
 	//glPushMatrix();
 	//glTranslatef(0.1f, 0.1f, 0.0f);
@@ -183,27 +188,27 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 				glfwSetWindowShouldClose(window, true);
 				break;
 			case GLFW_KEY_1:  
-				red += 0.01;
+				red += 0.01f;
 				printf("red =  %f\n", red);
 				break;
 			case GLFW_KEY_2:
-				red -= 0.01;
+				red -= 0.01f;
 				printf("red =  %f\n", red);
 				break;
 			case GLFW_KEY_3:
-				green += 0.01;
+				green += 0.01f;
 				printf("green =  %f\n", green);
 				break;
 			case GLFW_KEY_4:
-				green -= 0.01;
+				green -= 0.01f;
 				printf("green =  %f\n", green);
 				break;
 			case GLFW_KEY_5:
-				blue += 0.01;
+				blue += 0.01f;
 				printf("blue =  %f\n", blue);
 				break;
 			case GLFW_KEY_6:
-				blue -= 0.01;
+				blue -= 0.01f;
 				printf("blue =  %f\n", blue);
 				break;
 			case GLFW_KEY_W:
@@ -235,5 +240,45 @@ void updateScene()
 {
 	//glTranslated(0.1f,0.1f,0);
 	//glPopMatrix();
+
+	//horizontal check
+	if (vertices[1][0]+ horizontal > 4)
+	{
+		horz = false;
+	}
+	if (vertices[3][0]+ horizontal < -4)
+	{
+		horz = true;
+	}
+
+	//vertical check
+	if (vertices[0][1]+ vertical > 2)
+	{
+		vert = false;
+	}
+	if (vertices[2][1]+ vertical < -2)
+	{
+		vert = true;
+	}
+
+
+	if (horz)
+	{
+		horizontal += 0.0005f;
+	}
+	else
+	{
+		horizontal -= 0.0005f;
+	}
+
+	if (vert)
+	{
+		vertical += 0.0005f;
+	}
+	else
+	{
+		vertical -= 0.0005f;
+	}
+	
 }
 
