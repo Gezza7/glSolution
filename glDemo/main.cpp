@@ -7,6 +7,13 @@
 // Window size
 const unsigned int initWidth = 512;
 const unsigned int initHeight = 512;
+double red = 1;
+double green = 1;
+double blue = 1;
+
+float vertical = 0;
+float horizontal = 0;
+
 
 // Function prototypes
 void renderScene();
@@ -58,6 +65,7 @@ int main() {
 	// Initialise scene - geometry and shaders etc
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 
+	gluOrtho2D(-2.0, 2.0, -2.0, 2.0);
 
 	//
 	// 2. Main loop
@@ -66,6 +74,35 @@ int main() {
 
 	// Loop while program is not terminated.
 	while (!glfwWindowShouldClose(window)) {
+
+		//ensure rgb is between 0 and 255
+		//red
+		if (red > 1)
+		{
+			red = 0;
+		}
+		else if (red < 0)
+		{
+			red = 1;
+		}
+		//green
+		if (green > 1)
+		{
+			green = 0;
+		}
+		else if (green < 0)
+		{
+			green = 1;
+		}
+		//blue
+		if (blue > 1)
+		{
+			blue = 0;
+		}
+		else if (blue < 0)
+		{
+			blue = 1;
+		}
 
 		updateScene();
 		renderScene();						// Render into the current buffer
@@ -88,8 +125,42 @@ void renderScene()
 {
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glColor3d(1, 1, 0);
 	// Render objects here...
+	glBegin(GL_TRIANGLES);
+	glVertex2f(-0.5f, -0.5f);
+	glVertex2f(0.0f, 0.5f);
+	glVertex2f(0.5f, -0.5f);
+	glEnd();
+
+	glBegin(GL_TRIANGLES); 
+	glVertex2f(-0.5f, 0.2f);
+	glVertex2f(0.0f, -0.8f);
+	glVertex2f(0.5f, 0.2f);
+	glEnd(); 
+
+	glColor3d(red, green, blue);        
+	glBegin(GL_TRIANGLES);
+	glVertex2f(-0.9f, -0.1f);
+	glVertex2f(-0.8f, 0.1f);
+	glVertex2f(-0.7f, -0.1f);
+	glEnd();
+
+	
+	glColor3d(1, 0, 0);
+	glBegin(GL_POLYGON); 
+	glVertex2f(1.0f +horizontal, 0.0f +vertical);
+	glVertex2f(1.5f + horizontal, 0.0f + vertical);
+	glVertex2f(1.5f + horizontal, -0.5f + vertical);
+	glVertex2f(1.0f + horizontal, -0.5f + vertical);
+	glEnd();
+
+
+	//glPushMatrix();
+	//glTranslatef(0.1f, 0.1f, 0.0f);
+	//glPopMatrix();
+	
+
 }
 
 
@@ -111,6 +182,42 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, true);
 				break;
+			case GLFW_KEY_1:  
+				red += 0.01;
+				printf("red =  %f\n", red);
+				break;
+			case GLFW_KEY_2:
+				red -= 0.01;
+				printf("red =  %f\n", red);
+				break;
+			case GLFW_KEY_3:
+				green += 0.01;
+				printf("green =  %f\n", green);
+				break;
+			case GLFW_KEY_4:
+				green -= 0.01;
+				printf("green =  %f\n", green);
+				break;
+			case GLFW_KEY_5:
+				blue += 0.01;
+				printf("blue =  %f\n", blue);
+				break;
+			case GLFW_KEY_6:
+				blue -= 0.01;
+				printf("blue =  %f\n", blue);
+				break;
+			case GLFW_KEY_W:
+				vertical += 0.01f;
+				break;
+			case GLFW_KEY_S:
+				vertical -= 0.01f;
+				break;
+			case GLFW_KEY_A:
+				horizontal -= 0.01;
+				break;
+			case GLFW_KEY_D:
+				horizontal += 0.01;
+				break;
 
 			default:
 			{
@@ -124,6 +231,9 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 
 
 // Function called to animate elements in the scene
-void updateScene() {
+void updateScene() 
+{
+	//glTranslated(0.1f,0.1f,0);
+	//glPopMatrix();
 }
 
