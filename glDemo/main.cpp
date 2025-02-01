@@ -15,7 +15,13 @@ float vertical = 0;
 float horizontal = 0;
 bool horz = false; 
 bool vert = false;
-float vertices[4][2] = { {1.0f, 0.0f},{1.5f,0.0f},{1.5f, -0.5f},{1.0f,-0.5f} };
+float vertices[4][2] = { {0.75f, 0.0f},{2.25f,0.0f},{2.25f, -1.0f},{0.75f,-1.0f} };
+
+float vertFloat = 0;
+float horzFloat = 0;
+bool horzBool = false;
+bool vertBool = false;
+float vertices2[4][2] = { {1.25f, 0.0f},{1.5f,0.0f},{1.5f, -0.25f},{1.25f,-0.25f} };
 
 
 // Function prototypes
@@ -23,6 +29,8 @@ void renderScene();
 void resizeWindow(GLFWwindow* window, int width, int height);
 void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 void updateScene();
+void redSquareTransform();
+void cyanSquareTransform();
 
 
 int main() {
@@ -149,6 +157,7 @@ void renderScene()
 	glVertex2f(-0.7f, -0.1f);
 	glEnd();
 
+	//red square
 	glPushMatrix();
 	glTranslatef(horizontal, vertical, 0);
 	glColor3f(1, 0, 0);
@@ -161,9 +170,18 @@ void renderScene()
 	glEnd();
 	glPopMatrix();
 
-	//glPushMatrix();
-	//glTranslatef(0.1f, 0.1f, 0.0f);
-	//glPopMatrix();
+	//cyan square
+	glPushMatrix(); 
+	glTranslatef(horzFloat, vertFloat, 0); 
+	glColor3f(0, 1, 1); 
+	glBegin(GL_POLYGON); 
+	for (int i = 0; i < 4; i++)
+	{
+
+		glVertex2f(vertices2[i][0], vertices2[i][1]); 
+	}
+	glEnd(); 
+	glPopMatrix(); 
 	
 
 }
@@ -241,22 +259,29 @@ void updateScene()
 	//glTranslated(0.1f,0.1f,0);
 	//glPopMatrix();
 
+	redSquareTransform();
+	cyanSquareTransform();
+	
+}
+
+void redSquareTransform()
+{
 	//horizontal check
-	if (vertices[1][0]+ horizontal > 4)
+	if (vertices[1][0] + horizontal > 4)
 	{
 		horz = false;
 	}
-	if (vertices[3][0]+ horizontal < -4)
+	if (vertices[3][0] + horizontal < -4)
 	{
 		horz = true;
 	}
 
 	//vertical check
-	if (vertices[0][1]+ vertical > 2)
+	if (vertices[0][1] + vertical > 2)
 	{
 		vert = false;
 	}
-	if (vertices[2][1]+ vertical < -2)
+	if (vertices[2][1] + vertical < -2)
 	{
 		vert = true;
 	}
@@ -264,21 +289,62 @@ void updateScene()
 
 	if (horz)
 	{
-		horizontal += 0.0005f;
+		horizontal += 0.0001f;
 	}
 	else
 	{
-		horizontal -= 0.0005f;
+		horizontal -= 0.0001f;
 	}
 
 	if (vert)
 	{
-		vertical += 0.0005f;
+		vertical += 0.0001f;
 	}
 	else
 	{
-		vertical -= 0.0005f;
+		vertical -= 0.0001f;
 	}
-	
+}
+
+void cyanSquareTransform()
+{
+	//horizontal check
+	if (vertices2[1][0] + horzFloat > vertices[1][0] + horizontal)
+	{
+		horzBool = false;
+	}
+	if (vertices2[3][0] + horzFloat < vertices[3][0] + horizontal)
+	{
+		horzBool = true;
+	}
+
+	//vertical check
+	if (vertices2[0][1] + vertFloat > vertices[0][1]+vertical)
+	{
+		vertBool = false;
+	}
+	if (vertices2[2][1] + vertFloat < vertices[2][1]+vertical)
+	{
+		vertBool = true;
+	}
+
+
+	if (horzBool)
+	{
+		horzFloat += 0.0003f;
+	}
+	else
+	{
+		horzFloat -= 0.0003f;
+	}
+
+	if (vertBool)
+	{
+		vertFloat += 0.0003f;
+	}
+	else
+	{
+		vertFloat -= 0.0003f;
+	}
 }
 
