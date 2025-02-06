@@ -23,6 +23,8 @@ bool horzBool = false;
 bool vertBool = false;
 float vertices2[4][2] = { {1.25f, 0.0f},{1.5f,0.0f},{1.5f, -0.25f},{1.25f,-0.25f} };
 
+GLfloat colours[4][3] = { {1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{0.5f,0.5f,0.5f} };
+
 
 // Function prototypes
 void renderScene();
@@ -164,7 +166,7 @@ void renderScene()
 	glBegin(GL_POLYGON); 
 	for (int i = 0; i < 4; i++)
 	{
-		
+		glColor3f(colours[i][0], colours[i][1], colours[i][2]);
 		glVertex2f(vertices[i][0], vertices[i][1]);
 	}
 	glEnd();
