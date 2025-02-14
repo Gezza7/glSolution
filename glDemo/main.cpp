@@ -2,6 +2,8 @@
 #include "core.h"
 #include "MyShapes.h"
 
+using namespace std;
+
 // global variables
 
 // Window size
@@ -34,7 +36,17 @@ bool tankLeft = false;
 bool tankRight = false;
 
 bool shoot = true; 
-float bulletVertices[4][2];
+float bulletVertices[2] = { 0,0 };
+int bulletDirection = -1;
+
+
+mt19937 engine;
+uniform_real_distribution<float> xRange;
+uniform_real_distribution<float> yRange;
+vector<glm::vec2> vertexCoords;
+vector<glm::vec3> colourValues;
+uniform_real_distribution<float> colourRange;
+
 
 
 // Function prototypes
@@ -45,6 +57,7 @@ void updateScene();
 void rRectTransform();
 void cyanSquareTransform();
 void tankShoot(float atX, float atY, int direction);
+void bullet();
 
 
 
@@ -92,6 +105,29 @@ int main() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 
 	gluOrtho2D(-4.0, 4.0, -2.0, 2.0);
+
+	random_device rd;
+	engine = mt19937(rd());
+	xRange = uniform_real_distribution<float>(-4.0f, 4.0f);
+	yRange = uniform_real_distribution<float>(-2.0f, 2.0f);
+	colourRange = uniform_real_distribution<float>(0.0f, 1.0f);
+
+	vertexCoords = vector<glm::vec2>(100, glm::vec2(0.0f, 0.0f));
+	colourValues = vector<glm::vec3>(100, glm::vec3(0.0f, 0.0f, 0.0f));
+
+	for (int i = 0; i < 100; i++)
+	{
+		float x = xRange(engine);
+		float y = yRange(engine);
+		vertexCoords[i] = glm::vec2(x, y);
+
+		float r = colourRange(engine);
+		float g = colourRange(engine);
+		float b = colourRange(engine);
+		colourValues[i] = glm::vec3(r, g, b);
+	}
+
+
 
 	//
 	// 2. Main loop
@@ -211,12 +247,24 @@ void renderScene()
 	drawTank(tankX, tankY, tankDirection, tankColour);
 
 	//tank bullet
-	if (shoot)
-	{
-
-	}
+	glPointSize(15.0f);
+	glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_POINTS);
+	glVertex2f(bulletVertices[0], bulletVertices[1]);
+	glEnd();
 
 	drawSemiCircleStudio();
+
+	glPointSize(5.0f);
+	
+
+	glBegin(GL_POINTS);
+	for (int i = 0;i < 100;i++)
+	{
+		glColor3f(colourValues[i].x, colourValues[i].y, colourValues[i].z);
+		glVertex2f(vertexCoords[i].x, vertexCoords[i].y);
+	}
+	glEnd();
 }
 
 
@@ -264,7 +312,31 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 				break;
 
 			case GLFW_KEY_SPACE:
-
+				if (shoot)
+				{
+					if (tankDirection == 0)
+					{
+						bulletVertices[0] = tankX + 0.5;
+						bulletVertices[1] = tankY;
+					}
+					else if (tankDirection == 1)
+					{
+						bulletVertices[0] = tankX - 0.5;
+						bulletVertices[1] = tankY;
+					}
+					else if (tankDirection == 2)
+					{
+						bulletVertices[0] = tankX;
+						bulletVertices[1] = tankY +0.5;
+					}
+					else if (tankDirection == 3)
+					{
+						bulletVertices[0] = tankX;
+						bulletVertices[1] = tankY - 0.5;
+					}
+					bulletDirection = tankDirection;
+					shoot = false;
+				}
 				break;
 			case GLFW_KEY_W:
 				tankUp = true;
@@ -332,7 +404,7 @@ void updateScene()
 
 	rRectTransform();
 	cyanSquareTransform();
-	
+	bullet();
 }
 
 void rRectTransform()
@@ -425,5 +497,38 @@ void tankShoot(float atX, float atY, int direction)
 
 }
 
+void bullet()
+{
+	if (!shoot)
+	{
+		if (bulletDirection == 0)
+		{
+			bulletVertices[0] += 0.01;
+			
+		}
+		else if (bulletDirection == 1)
+		{
+			bulletVertices[0] -= 0.01;;
+			
+		}
+		else if (bulletDirection == 2)
+		{
+			
+			bulletVertices[1] += 0.01;
+		}
+		else if (bulletDirection == 3)
+		{
+			
+			bulletVertices[1] -= 0.01;
+		}
+		
+	}
+	
+	if (bulletVertices[0] > 4 || bulletVertices[0] < -4 || bulletVertices[1] > 2 || bulletVertices[1] < -2)
+	{
+		shoot = true;
+	}
+	
+}
 
 
