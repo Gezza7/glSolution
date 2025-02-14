@@ -261,8 +261,8 @@ void renderScene()
 	glBegin(GL_POINTS);
 	for (int i = 0;i < 100;i++)
 	{
-		glColor3f(colourValues[i].x, colourValues[i].y, colourValues[i].z);
-		glVertex2f(vertexCoords[i].x, vertexCoords[i].y);
+		glColor3f(colourValues[i].x, colourValues[i].y, colourValues[i].z); 
+		glVertex2f(vertexCoords[i].x, vertexCoords[i].y); 
 	}
 	glEnd();
 }
